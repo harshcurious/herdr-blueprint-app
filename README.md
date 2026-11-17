@@ -45,6 +45,26 @@ herdr-app do blueprint.add-button
 
 `herdr-app do blueprint.remove-button` takes the button away again.
 
+### Without cloning the tab bar
+
+`add-button` clones Herdr's tab bar (`tabs-blueprint`). Herdr never updates a clone, so it misses later tab bar changes. Instead, `mods/blueprint-toolbar` puts the button in a block of its own beside Herdr's unmodified `tabs`, in a layout of yours. Blueprint gets a side column of its own, and the button remembers per tab whether it was open. Copy `mods/blueprint-toolbar` next to `mods/blueprint`, then in your layout:
+
+```json
+{ "id": "tabs", "type": "row", "children": [
+  { "id": "tab-bar", "type": "block", "content": { "mod": "tabs" } },
+  { "id": "blueprint-toolbar-button", "type": "block", "size": { "px": 104 },
+    "content": { "mod": "blueprint-toolbar", "props": { "panel": "blueprint-panel", "closes": "panel" } } } ] }
+```
+
+and, beside the `panel` column that holds Files and Changes:
+
+```json
+{ "id": "blueprint-panel", "type": "column", "size": { "px": 720 }, "min": 280, "hidden": true,
+  "children": [ { "id": "blueprint", "type": "block", "content": { "mod": "blueprint", "props": { "panel": "blueprint-panel" } } } ] }
+```
+
+`closes` is optional: it names layout nodes (a string or a list) hidden whenever the button opens Blueprint, so Blueprint takes the place of Files and Changes rather than squeezing the terminal beside them. Every id in a layout must be unique.
+
 ## A tour
 
 ### 1. Connect your agent

@@ -655,7 +655,10 @@ export default class Blueprint extends View {
     const there = panes().find((p) => p.mod === MOD && p.tab === tab);
     if (there) run("pane.focus", { pane: there.pane });
     else run("pane.split", { direction: "right", pane: this.ctxPane ?? focused()?.pane ?? undefined, mod: MOD, props: { tab } });
-    if (this.inPanel) run("layout.hide", { id: "panel" });
+    // props.panel may name the layout node that holds the panel ("blueprint-panel"
+    // beside Herdr's own tab bar); true means the shared side panel, "panel".
+    const panel = given()?.panel;
+    if (this.inPanel) run("layout.hide", { id: typeof panel === "string" ? panel : "panel" });
   }
 
   redraw(cx) {
